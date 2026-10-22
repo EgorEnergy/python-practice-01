@@ -1,0 +1,91 @@
+.venv/
+__pycache__/
+*.pyc
+.idea/
+
+n = len(matrix)
+                anti_diagonal = [matrix[i][n - 1 - i] for i in range(n)]
+
+
+                n = len(matrix)
+anti_diagonal = []
+for i in range(n):
+    anti_diagonal.append(matrix[i][n - 1 - i])
+
+    Почему n - 1 - i
+При i = 0 берём последний столбец: индекс n-1.
+
+При i = n-1 берём первый столбец: индекс 0.
+
+Как бы «зеркалим» столбец относительно центра.
+
+
+Где использовать генераторы
+Большие объёмы данных — не грузим в память, читаем по одному.
+
+Бесконечные последовательности — список бесконечным быть не может, генератор — легко.
+
+Конвейеры обработки — один генератор читает, другой фильтрует, третий выдаёт.
+
+Ленивые вычисления — числа вычисляются только когда их просят.
+
+
+Генератор vs список
+python
+lst = [x for x in range(5)]   # СПИСОК — все 5 чисел в памяти
+gen = (x for x in range(5))   # ГЕНЕРАТОР — числа по одному
+
+print(lst)      # [0, 1, 2, 3, 4]
+print(gen)      # <generator object ...>  ← это не значения
+print(list(gen))  # [0, 1, 2, 3, 4]  ← разворачиваем
+
+
+
+
+
+
+
+Что делает цикл for под капотом
+python
+for x in lst:
+    print(x)
+Python разворачивает это в:
+
+python
+iterator = iter(lst)         # 1. получить итератор
+while True:
+    try:
+        x = next(iterator)   # 2. взять следующий
+        print(x)
+    except StopIteration:    # 3. если кончились — выйти
+        break
+
+
+class Dog:
+    def bark(self):
+        print("Гав!")
+
+rex = Dog()
+rex.bark()    # внутри bark self == rex
+Когда пишешь rex.bark(), Python автоматически подставляет self = rex
+
+все методы объекта должны иметь доступ к его полям!!!!!!!
+
+
+
+Способ 3: пропустить первые N чисел
+Если нужно «начать с 5-го числа Фибоначчи» — сначала считаем 5 чисел, потом отдаём:
+
+python
+class FibonacciIterator:
+    def __init__(self, n, skip=0):
+        self.n = n
+        self.i = 0
+        self.a = 0
+        self.b = 1
+        # проматываем skip чисел
+        for _ in range(skip):
+            self.a, self.b = self.b, self.a + self.b
+
+fib = FibonacciIterator(5, skip=3)   # пропустит 0,1,1 и начнёт с 2
+# выдаст: 2, 3, 5, 8, 13
